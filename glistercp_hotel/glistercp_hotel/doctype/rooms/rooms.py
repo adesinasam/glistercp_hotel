@@ -7,7 +7,7 @@ import frappe
 from frappe.model.document import Document
 
 class Rooms(Document):
-    def before_save(self):
+    def after_save(self):
         self.create_or_update_item()
 
     def create_or_update_item(self):

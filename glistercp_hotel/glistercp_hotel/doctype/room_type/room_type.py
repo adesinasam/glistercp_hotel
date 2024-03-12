@@ -7,7 +7,7 @@ import frappe
 from frappe.model.document import Document
 
 class RoomType(Document):
-    def before_save(self):
+    def after_save(self):
         self.create_item_group()
 
     def create_item_group(self):
