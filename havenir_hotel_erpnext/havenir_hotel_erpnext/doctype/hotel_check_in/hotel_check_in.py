@@ -5,47 +5,185 @@
 from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
-from frappe.core.doctype.sms_settings.sms_settings import send_sms
+from frappe.utils import date_diff
 
-
-class HotelCheckIn(Document):
+class HotelCheckOut(Document):
     def validate(self):
-        for room in self.rooms:
-            room_doc = frappe.get_doc('Rooms', room.room_no)
-            if room_doc.room_status != 'Available':
-                frappe.throw('Room {} is not Available'.format(room.room_no))
+        room_doc = frappe.get_doc('Rooms', self.room)
+        if room_doc.room_status != 'Checked In' and room_doc.check_in_id == self.check_in_id:
+            frappe.throw('Room Status is not Checked In')
 
     def on_submit(self):
-        self.status = 'To Check Out'
-        doc = frappe.get_doc('Hotel Check In', self.name)
-        doc.db_set('status', 'To Check Out')
-        for room in self.rooms:
-            room_doc = frappe.get_doc('Rooms', room.room_no)
-            room_doc.db_set('check_in_id', self.name)
-            room_doc.db_set('room_status', 'Checked In')
-        # send_payment_sms(self)
+        room_doc = frappe.get_doc('Rooms', self.room)
+        room_doc.db_set('room_status', 'Available')
+        room_doc.db_set('check_in_id', None)
+        check_in_doc = frappe.get_doc('Hotel Check In', self.check_in_id)
+        all_checked_out = 1
 
-    def on_cancel(self):
-        self.status = "Cancelled"
-        doc = frappe.get_doc('Hotel Check In', self.name)
-        doc.db_set('status', 'Cancelled')
-        for room in self.rooms:
-            room_doc = frappe.get_doc('Rooms', room.room_no)
-            room_doc.db_set('check_in_id', None)
-            room_doc.db_set('room_status', 'Available')
+        # Setting Food Orders and Laundry Orders to Complete
+        self.update_orders_status('Hotel Food Order', 'To Check Out')
+        self.update_orders_status('Hotel Laundry Order', 'To Check Out')
 
-    def get_room_price(self, room):
-        room_price = frappe.get_value('Rooms', {
-            'room_number': room
-        }, [
-            'price'
-        ])
-        return room_price
+        # Setting Check In doc to Complete
+        for room in check_in_doc.rooms:
+            if frappe.db.get_value('Rooms', room.room_no, 'room_status') == 'Checked In':
+                all_checked_out = 0
+        if all_checked_out == 1:
+            check_in_doc.db_set('status', 'Completed')
 
-def send_payment_sms(self):
-    sms_settings = frappe.get_doc('SMS Settings')
-    if sms_settings.sms_gateway_url:
-        msg = 'Dear '
-        msg += self.guest_name
-        msg += ''',\nWe are delighted that you have selected our hotel. The entire team at the Hotel PakHeritage welcomes you and trust your stay with us will be both enjoyable and comfortable.\nRegards,\nHotel Management'''
-        send_sms([self.contact_no], msg = msg)
+        # Creating Additional Hotel Payment Vouchers
+        if self.amount_paid > 0 and self.customer == 'Hotel Walk In Customer':
+            self.create_payment_entry(self.amount_paid - self.refund)
+        
+        if self.amount_paid == 0 and self.refund > 0:
+            self.create_payment_entry(self.refund, entry_type='Refund')
+
+        # Creating Sales Invoice
+        self.create_sales_invoice(all_checked_out)
+
+    def update_orders_status(self, doctype, status):
+        order_list = frappe.get_list(doctype, filters={
+            'status': status,
+            'room': self.room,
+            'check_in_id': self.check_in_id
+        })
+
+        for order in order_list:
+            order_doc = frappe.get_doc(doctype, order.name)
+            order_doc.db_set('status', 'Completed')
+
+    def create_payment_entry(self, amount_paid, entry_type='Receive'):
+        payment_doc = frappe.new_doc('Hotel Payment Entry')
+        payment_doc.update({
+            'room': self.room,
+            'amount_paid': amount_paid,
+            'guest_id': self.guest_id,
+            'check_in_id': self.check_in_id,
+            'guest_name': self.guest_name,
+            'contact_no': self.contact_no
+        })
+        payment_doc.save()
+        payment_doc.submit()
+
+    def create_sales_invoice(self, all_checked_out):
+        if self.customer == 'Hotel Walk In Customer':
+            self.create_invoice('Hotel Walk In Customer', self.check_in_id)
+
+        if all_checked_out == 1 or self.customer != 'Hotel Walk In Customer':
+            create_walk_in_invoice = any(item.is_pos == 1 for item in self.items)
+            if create_walk_in_invoice:
+                self.create_invoice('Hotel Walk In Customer', self.check_in_id)
+
+            check_out_list = frappe.get_list('Hotel Check Out', filters={
+                'docstatus': 1,
+                'check_in_id': self.check_in_id,
+                'customer': ['not like', 'Hotel Walk In Customer']
+            }, order_by='name asc')
+            if all_checked_out == 1 and check_out_list:
+                self.create_invoice(check_out_list[0].customer, self.check_in_id)
+
+    def create_invoice(self, customer, check_in_id):
+        sales_invoice_doc = frappe.new_doc('Sales Invoice')
+        company = frappe.get_doc('Company', self.company)
+        sales_invoice_doc.update({
+            'customer': customer,
+            'check_in_id': check_in_id,
+            'check_in_date': frappe.get_value('Hotel Check In', check_in_id, 'check_in'),
+            'due_date': frappe.utils.data.today(),
+            'debit_to': company.default_receivable_account
+        })
+
+        for item in self.items:
+            item_doc = frappe.get_doc('Item', item.item)
+            default_income_account = company.default_income_account
+
+            if item.is_pos == 1:
+                default_income_account = item_doc.get_income_account()
+
+            sales_invoice_doc.append('items', {
+                'item_code': item_doc.item_code,
+                'item_name': item_doc.item_name,
+                'description': item_doc.description,
+                'qty': item.qty,
+                'uom': item_doc.stock_uom,
+                'rate': item.rate,
+                'amount': item.amount,
+                'income_account': default_income_account
+            })
+
+        if self.discount:
+            sales_invoice_doc.discount_amount += self.discount
+        if self.food_discount != 0:
+            sales_invoice_doc.discount_amount += self.food_discount
+
+        sales_invoice_doc.insert(ignore_permissions=True)
+        sales_invoice_doc.submit()
+
+    @frappe.whitelist()
+    def get_check_in_details(self):
+        room_doc = frappe.get_doc('Rooms', self.room)
+        check_in_doc = frappe.get_doc('Hotel Check In', room_doc.check_in_id)
+        return [check_in_doc.name, check_in_doc.cnic, check_in_doc.guest_name, check_in_doc.check_in, check_in_doc.contact_no, check_in_doc.guest_id]
+
+    @frappe.whitelist()
+    def calculate_stay_days(self):
+        return date_diff(self.check_out, self.check_in)
+
+    @frappe.whitelist()
+    def get_items(self):
+        hotel_check_in = frappe.get_doc('Hotel Check In', self.check_in_id)
+        check_in_dict = {}
+
+        for room in hotel_check_in.rooms:
+            if room.room_no == self.room:
+                check_in_dict['room'] = room.room_no
+                check_in_dict['price'] = room.price
+
+        total_food_discount = 0
+        total_service_charges = 0
+        food_order_list = []
+        room_food_order_list = frappe.get_list('Hotel Food Order', filters={
+            'status': 'To Check Out',
+            'room': self.room,
+            'check_in_id': self.check_in_id,
+            'is_paid': 0
+        })
+
+        for food_order in room_food_order_list:
+            food_order_dict = {}
+            food_order_doc = frappe.get_doc('Hotel Food Order', food_order.name)
+            food_order_dict.update({
+                'name': food_order_doc.name,
+                'date': food_order_doc.posting_date,
+                'order_type': food_order_doc.order_type,
+                'items': []
+            })
+            total_service_charges += food_order_doc.service_charges
+            total_food_discount += food_order_doc.discount_amount
+
+            for item in food_order_doc.items:
+                food_item_dict = {
+                    'item': item.item,
+                    'qty': item.qty,
+                    'rate': item.rate,
+                    'amount': item.amount
+                }
+                food_order_dict['items'].append(food_item_dict)
+
+            food_order_list.append(food_order_dict)
+
+        # Similar process for laundry orders
+
+        stay_days = date_diff(self.check_out, self.check_in)
+
+        payment_entry_list = []
+        room_payment_entry_list = frappe.get_list('Hotel Payment Entry', filters={
+            'check_in_id': self.check_in_id,
+            'docstatus': 1,
+            'room': self.room
+        }, order_by='name asc')
+
+        # Similar process for payment entries
+
+        return [stay_days, check_in_dict, food_order_list, laundry_order_list, payment_entry_list, total_food_discount, total_service_charges]
+
