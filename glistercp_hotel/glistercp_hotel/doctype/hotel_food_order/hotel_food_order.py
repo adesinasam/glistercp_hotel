@@ -23,6 +23,7 @@ class HotelFoodOrder(Document):
         doc = frappe.get_doc('Hotel Food Order', self.name)
         doc.db_set('status', 'Cancelled')
 
+    @frappe.whitelist()
     def get_price(self, item):
         item_price = frappe.get_value('Item Price', 
         {
