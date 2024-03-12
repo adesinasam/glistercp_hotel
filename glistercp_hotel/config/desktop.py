@@ -6,7 +6,7 @@ from frappe import _
 def get_data():
     return [
         {
-            "module_name": "Havenir Hotel Erpnext",
+            "module_name": "Glistercp Hotel",
             "category": "Modules",
             "label": _("Hotel Management"),
             "color": "blue",

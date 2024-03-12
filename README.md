@@ -1,4 +1,4 @@
-## Havenir Hotel Erpnext
+## Glistercp Hotel
 
 Hotel Management App for ERPNext
 

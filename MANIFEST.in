@@ -4,15 +4,15 @@ include *.json
 include *.md
 include *.py
 include *.txt
-recursive-include havenir_hotel_erpnext *.css
-recursive-include havenir_hotel_erpnext *.csv
-recursive-include havenir_hotel_erpnext *.html
-recursive-include havenir_hotel_erpnext *.ico
-recursive-include havenir_hotel_erpnext *.js
-recursive-include havenir_hotel_erpnext *.json
-recursive-include havenir_hotel_erpnext *.md
-recursive-include havenir_hotel_erpnext *.png
-recursive-include havenir_hotel_erpnext *.py
-recursive-include havenir_hotel_erpnext *.svg
-recursive-include havenir_hotel_erpnext *.txt
-recursive-exclude havenir_hotel_erpnext *.pyc
+recursive-include glistercp_hotel *.css
+recursive-include glistercp_hotel *.csv
+recursive-include glistercp_hotel *.html
+recursive-include glistercp_hotel *.ico
+recursive-include glistercp_hotel *.js
+recursive-include glistercp_hotel *.json
+recursive-include glistercp_hotel *.md
+recursive-include glistercp_hotel *.png
+recursive-include glistercp_hotel *.py
+recursive-include glistercp_hotel *.svg
+recursive-include glistercp_hotel *.txt
+recursive-exclude glistercp_hotel *.pyc

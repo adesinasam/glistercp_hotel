@@ -2,13 +2,13 @@
 from __future__ import unicode_literals
 from . import __version__ as app_version
 
-app_name = "havenir_hotel_erpnext"
-app_title = "Havenir Hotel Erpnext"
-app_publisher = "Havenir"
+app_name = "glistercp_hotel"
+app_title = "Glistercp Hotel"
+app_publisher = "Glistercp"
 app_description = "Hotel Management App for ERPNext"
 app_icon = "octicon octicon-file-directory"
 app_color = "grey"
-app_email = "info@havenir.com"
+app_email = "support@glistercp.com.ng"
 app_license = "MIT"
 
 # Includes in <head>
@@ -26,12 +26,12 @@ fixtures = [{
 }]
 
 # include js, css files in header of desk.html
-# app_include_css = "/assets/havenir_hotel_erpnext/css/havenir_hotel_erpnext.css"
-# app_include_js = "/assets/havenir_hotel_erpnext/js/havenir_hotel_erpnext.js"
+# app_include_css = "/assets/glistercp_hotel/css/glistercp_hotel.css"
+# app_include_js = "/assets/glistercp_hotel/js/glistercp_hotel.js"
 
 # include js, css files in header of web template
-# web_include_css = "/assets/havenir_hotel_erpnext/css/havenir_hotel_erpnext.css"
-# web_include_js = "/assets/havenir_hotel_erpnext/js/havenir_hotel_erpnext.js"
+# web_include_css = "/assets/glistercp_hotel/css/glistercp_hotel.css"
+# web_include_js = "/assets/glistercp_hotel/js/glistercp_hotel.js"
 
 # include js in page
 # page_js = {"page" : "public/js/file.js"}
@@ -54,7 +54,7 @@ fixtures = [{
 # }
 
 # Website user home page (by function)
-# get_website_user_home_page = "havenir_hotel_erpnext.utils.get_home_page"
+# get_website_user_home_page = "glistercp_hotel.utils.get_home_page"
 
 # Generators
 # ----------
@@ -65,14 +65,14 @@ fixtures = [{
 # Installation
 # ------------
 
-# before_install = "havenir_hotel_erpnext.install.before_install"
-# after_install = "havenir_hotel_erpnext.install.after_install"
+# before_install = "glistercp_hotel.install.before_install"
+# after_install = "glistercp_hotel.install.after_install"
 
 # Desk Notifications
 # ------------------
 # See frappe.core.notifications.get_notification_config
 
-# notification_config = "havenir_hotel_erpnext.notifications.get_notification_config"
+# notification_config = "glistercp_hotel.notifications.get_notification_config"
 
 # Permissions
 # -----------
@@ -103,38 +103,38 @@ fixtures = [{
 
 # scheduler_events = {
 # 	"all": [
-# 		"havenir_hotel_erpnext.tasks.all"
+# 		"glistercp_hotel.tasks.all"
 # 	],
 # 	"daily": [
-# 		"havenir_hotel_erpnext.tasks.daily"
+# 		"glistercp_hotel.tasks.daily"
 # 	],
 # 	"hourly": [
-# 		"havenir_hotel_erpnext.tasks.hourly"
+# 		"glistercp_hotel.tasks.hourly"
 # 	],
 # 	"weekly": [
-# 		"havenir_hotel_erpnext.tasks.weekly"
+# 		"glistercp_hotel.tasks.weekly"
 # 	]
 # 	"monthly": [
-# 		"havenir_hotel_erpnext.tasks.monthly"
+# 		"glistercp_hotel.tasks.monthly"
 # 	]
 # }
 
 # Testing
 # -------
 
-# before_tests = "havenir_hotel_erpnext.install.before_tests"
+# before_tests = "glistercp_hotel.install.before_tests"
 
 # Overriding Methods
 # ------------------------------
 #
 # override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "havenir_hotel_erpnext.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "glistercp_hotel.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-# 	"Task": "havenir_hotel_erpnext.task.get_dashboard_data"
+# 	"Task": "glistercp_hotel.task.get_dashboard_data"
 # }
 
