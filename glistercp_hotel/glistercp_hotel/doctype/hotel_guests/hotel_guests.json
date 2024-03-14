@@ -95,7 +95,7 @@
    "fieldname": "permanent_address",
    "fieldtype": "Small Text",
    "label": "Permanent Address",
-   "hidden": 1,
+   "hidden": 1
   },
   {
    "fieldname": "section_break_11",
