@@ -1,6 +1,6 @@
 {
  "autoname": "field:type",
- "creation": "2020-01-29 12:45:13.379092",
+ "creation": "2024-01-29 12:45:13.379092",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -43,7 +43,7 @@
    "label": "Extra Beds"
   }
  ],
- "modified": "2020-01-29 14:20:34.175184",
+ "modified": "2024-01-29 14:20:34.175184",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Room Type",
