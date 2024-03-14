@@ -1,6 +1,6 @@
 {
  "autoname": "naming_series:",
- "creation": "2020-01-29 14:39:12.726257",
+ "creation": "2024-01-29 14:39:12.726257",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -25,16 +25,17 @@
  ],
  "fields": [
   {
-   "allow_in_quick_entry": 1,
+   "allow_in_quick_entry": 0,
    "description": "Format: XXXXX-XXXXXXX-X\nExample: 12345-1234567-1",
    "fieldname": "cnic",
    "fieldtype": "Data",
-   "in_global_search": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
+   "in_global_search": 0,
+   "in_list_view": 0,
+   "in_standard_filter": 0,
    "label": "CNIC",
-   "reqd": 1,
-   "unique": 1
+   "hidden": 1,
+   "reqd": 0,
+   "unique": 0
   },
   {
    "allow_in_quick_entry": 1,
@@ -61,17 +62,18 @@
    "fieldtype": "Column Break"
   },
   {
-   "allow_in_quick_entry": 1,
+   "allow_in_quick_entry": 0,
    "fieldname": "passport_no",
    "fieldtype": "Data",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Passport No",
-   "unique": 1
+   "hidden": 1,
+   "unique": 0
   },
   {
    "allow_in_quick_entry": 1,
-   "description": "Format: 92XXXXXXXXXX\nExample: 923217654321",
+   "description": "Format: 08XXXXXXXXX\nExample: 03012345678",
    "fieldname": "contact_no",
    "fieldtype": "Data",
    "in_list_view": 1,
@@ -92,7 +94,8 @@
   {
    "fieldname": "permanent_address",
    "fieldtype": "Small Text",
-   "label": "Permanent Address"
+   "label": "Permanent Address",
+   "hidden": 1,
   },
   {
    "fieldname": "section_break_11",
@@ -103,18 +106,20 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Naming Series",
-   "options": "GUEST-.YYYY.-.#####"
+   "options": "GUEST-.YY.-.#####"
   },
   {
    "fieldname": "id_card_front_photo",
    "fieldtype": "Image",
    "label": "ID Card Front Photo",
+   "hidden": 1,
    "options": "id_card_front_attachment"
   },
   {
-   "allow_in_quick_entry": 1,
+   "allow_in_quick_entry": 0,
    "fieldname": "id_card_front_attachment",
    "fieldtype": "Attach Image",
+   "hidden": 1,
    "in_preview": 1,
    "label": "ID Card Front",
    "options": "image"
@@ -122,22 +127,25 @@
   {
    "fieldname": "id_card_back_attachment",
    "fieldtype": "Attach Image",
+   "hidden": 1,
    "label": "ID Card Back",
    "options": "image"
   },
   {
    "fieldname": "id_card_back_photo",
    "fieldtype": "Image",
+   "hidden": 1,
    "label": "ID Card Back Photo",
    "options": "id_card_back_attachment"
   },
   {
    "fieldname": "details_section",
+   "hidden": 1,
    "fieldtype": "Section Break",
    "label": "Details"
   }
  ],
- "modified": "2020-07-29 12:02:04.025076",
+ "modified": "2024-07-29 12:02:04.025076",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotel Guests",
@@ -181,7 +189,7 @@
    "write": 1
   }
  ],
- "search_fields": "guest_name,cnic,passport_no,contact_no",
+ "search_fields": "guest_name,contact_no,cnic,passport_no",
  "sort_field": "modified",
  "sort_order": "DESC",
  "title_field": "guest_name",

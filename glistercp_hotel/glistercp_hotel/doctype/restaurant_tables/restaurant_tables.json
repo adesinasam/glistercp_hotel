@@ -1,6 +1,6 @@
 {
  "autoname": "field:table_number",
- "creation": "2020-02-08 01:14:45.421421",
+ "creation": "2024-02-08 01:14:45.421421",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -24,7 +24,7 @@
    "reqd": 1
   }
  ],
- "modified": "2020-02-08 01:15:01.991051",
+ "modified": "2024-02-08 01:15:01.991051",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Restaurant Tables",

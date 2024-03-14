@@ -23,7 +23,7 @@ fixtures = [{
       ]
     ]
   ]
-}]
+}, "Customer", "Hotel Management Settings"]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/glistercp_hotel/css/glistercp_hotel.css"

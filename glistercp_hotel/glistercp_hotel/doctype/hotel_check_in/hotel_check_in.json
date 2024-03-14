@@ -1,6 +1,6 @@
 {
  "autoname": "naming_series:",
- "creation": "2020-01-29 14:57:03.679302",
+ "creation": "2024-01-29 14:57:03.679302",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -12,8 +12,9 @@
   "guest_id",
   "guest_photo_attachment",
   "check_in",
-  "company",
+  "expected_check_out",
   "column_break_7",
+  "company",
   "posting_date",
   "passport_no",
   "cnic",
@@ -65,6 +66,13 @@
    "fieldname": "check_in",
    "fieldtype": "Datetime",
    "label": "Check In",
+   "reqd": 1
+  },
+  {
+   "default": "",
+   "fieldname": "expected_check_out",
+   "fieldtype": "Datetime",
+   "label": "Expected Check Out",
    "reqd": 1
   },
   {
@@ -188,7 +196,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-05-03 13:52:44.433659",
+ "modified": "2024-03-03 13:52:44.433659",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotel Check In",

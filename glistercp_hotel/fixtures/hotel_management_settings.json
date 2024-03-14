@@ -1,0 +1,19 @@
+[
+ {
+  "banquet_hall_party": "Banquet Hall Party",
+  "docstatus": 0,
+  "doctype": "Hotel Management Settings",
+  "hotel_party": "Hotel Party",
+  "hotel_walk_in_customer": "Hotel Walk In Customer",
+  "modified": "2024-03-11 19:44:15.418118",
+  "name": "Hotel Management Settings",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "restaurant_party": "Restaurant Party",
+  "restaurant_walk_in_customer": "Restaurant Walk In Customer",
+  "room_complimentary": "Room Complimentary",
+  "staff_entertainment": "Staff Entertainment",
+  "take_away": "Take Away"
+ }
+]

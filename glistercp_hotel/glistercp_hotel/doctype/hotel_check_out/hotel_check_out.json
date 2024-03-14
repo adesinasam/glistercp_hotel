@@ -1,6 +1,6 @@
 {
  "autoname": "naming_series:",
- "creation": "2020-01-29 17:13:16.792311",
+ "creation": "2024-01-29 17:13:16.792311",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -395,7 +395,7 @@
   }
  ],
  "is_submittable": 1,
- "modified": "2020-02-16 18:08:42.687231",
+ "modified": "2024-02-16 18:08:42.687231",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotel Check Out",

@@ -21,7 +21,7 @@ class Rooms(Document):
         else:
             # If the Room Type does not exist, create a new item
             new_item = frappe.new_doc('Item')
-            new_item.item_code = self.room_number
+            new_item.name = self.room_number
             new_item.item_name = self.room_name
             new_item.item_group = self.room_type
             new_item.standard_rate = self.price
