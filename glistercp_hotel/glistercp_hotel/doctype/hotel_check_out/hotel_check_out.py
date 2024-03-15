@@ -60,7 +60,8 @@ class HotelCheckOut(Document):
             'guest_id': self.guest_id,
             'check_in_id': self.check_in_id,
             'guest_name': self.guest_name,
-            'contact_no': self.contact_no
+            'contact_no': self.contact_no,
+            'mode_of_payment': self.mode_of_payment
         })
         payment_doc.save()
         payment_doc.submit()

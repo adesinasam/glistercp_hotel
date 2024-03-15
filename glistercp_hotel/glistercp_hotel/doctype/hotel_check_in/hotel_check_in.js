@@ -39,9 +39,45 @@ frappe.ui.form.on("Hotel Check In", {
         frappe.throw('Please Enter Guests Details for Room ' + frm.doc.rooms[i].room_no);
       }
     }
+    if (frm.doc.check_in < frm.doc.from_date) {
+      frm.doc.check_in = "";
+      frm.refresh_fields();
+      frappe.throw(__("Check in cannot be before From Date"));
+    }
+    if (frm.doc.to_date < frm.doc.from_date) {
+      frm.doc.to_date = "";
+      frm.refresh_fields();
+      frappe.throw(__("To Date cannot be before From Date"));
+    }
+  },
+
+  from_date: function(frm) {
+    if (frm.doc.from_date < frappe.datetime.get_today()) {
+      frm.doc.from_date = "";
+      frm.refresh_fields();
+      frappe.throw(__("You can not select past date"));
+    }
+    for (var i in doc.rooms) {
+          doc.rooms[i].from_date = frm.doc.from_date;
+          frm.refresh_field("rooms");
+    }
+    frm.refresh_field("rooms");
+  },
+
+  check_in: function(frm) {
+    if (frm.doc.check_in < frappe.datetime.get_today()) {
+      frm.doc.check_in = "";
+      frm.refresh_fields();
+      frappe.throw(__("You can not select past date"));
+    }
   },
 
   to_date: function(frm) {
+    if (frm.doc.to_date < frappe.datetime.get_today()) {
+      frm.doc.to_date = "";
+      frm.refresh_fields();
+      frappe.throw(__("You can not select past date"));
+    }
     frm.call('calculate_stay_days').then(r => {
       if (r.message) {
         if (r.message > -1) {
@@ -52,53 +88,32 @@ frappe.ui.form.on("Hotel Check In", {
           } else {
             days = r.message;
           }
-          // for (var i in doc.rooms) {
-          //   if (doc.rooms[i].room_no) {
-          //       doc.rooms[i].qty = days;
-          //       // doc.rooms[i].amount = days * doc.rooms[i].price;
-          //       frm.refresh_field("rooms");
-          //   }
-          // }
+          for (var i in doc.rooms) {
+            if (doc.rooms[i].room_no) {
+                doc.rooms[i].to_date = frm.doc.to_date;
+                doc.rooms[i].qty = days;
+                doc.rooms[i].amount = days * doc.rooms[i].price;
+                frm.refresh_field("rooms");
+            }
+          }
           frm.doc.days = days;
+          frm.refresh_field('days');
           frm.refresh_field('rooms');
           frm.trigger("total_amount");
         } else {
           frm.doc.to_date = undefined;
           frm.refresh_field("to_date");
-          frappe.msgprint("Expected Check out date cannot be before check in date.");
+          frappe.msgprint("To Date cannot be before From Date.");
         }
       }
     });
   },
 
-  // to_date: function(frm) {
-  //     if (frm.doc.from_date && frm.doc.to_date) {
-  //         frm.call("calculate_stay_days", {
-  //             from_date: frm.doc.from_date,
-  //             to_date: frm.doc.to_date
-  //         }).then(r => {
-  //             if (r.message > -1) {
-  //                 var days = (r.message == 0) ? 1 : r.message;
-  //                 frm.doc.rooms.forEach(room => {
-  //                     if (room.room_no) {
-  //                         room.qty = days;
-  //                     }
-  //                 });
-  //                 frm.refresh_field("rooms");
-  //                 frm.trigger("total_amount");
-  //             } else {
-  //                 frm.set_value("to_date", undefined);
-  //                 frappe.msgprint("Expected Check out date cannot be before check in date.");
-  //             }
-  //         });
-  //     }
-  // },
-
   total_amount: function(frm){
     var temp_total_amount = 0;
     for (var i in frm.doc.rooms){
       if (frm.doc.rooms[i].price){
-        temp_total_amount += frm.doc.rooms[i].price;
+        temp_total_amount += frm.doc.rooms[i].amount;
       }
     }
     frm.doc.total_amount = temp_total_amount;
@@ -129,8 +144,9 @@ frappe.ui.form.on('Hotel Check In Room', {
           row.price = r.message;
           frm.refresh_field('rooms')
         });
-        frm.call('get_stay_days',{room: row.room_no}).then( r => {
+        frm.call('calculate_stay_days').then( r => {
           row.qty = r.message;
+          row.amount = r.message * row.price;
           frm.refresh_field('rooms')
         })
       }

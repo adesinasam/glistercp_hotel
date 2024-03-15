@@ -42,16 +42,38 @@ class HotelPaymentEntry(Document):
 
   def create_payment_entry(self):
     company = frappe.get_doc('Company',self.company)
+
+    pay_account = ""
+
+    pay_type = frappe.db.get_value('Mode of Payment Account', 'type')
+    if (pay_type != "Cash"):
+        reference_date = frappe.utils.data.today()
+        payment_reference = 0
+    else:
+        reference_date = ""
+        payment_reference = ""
+
+    pay_account = frappe.db.get_value('Mode of Payment Account', {'parent' : self.mode_of_payment, 'company' : self.company}, 'default_account')
+
+    if not pay_account or pay_account == "":
+        frappe.throw(
+            title="Error",
+            msg="The selected Mode of Payment has no linked account."
+        )
+
     if self.entry_type == 'Receive':
       payment_entry = frappe.new_doc('Payment Entry')
       payment_entry.payment_type = 'Receive'
-      payment_entry.mode_of_payment = 'Cash'
-      payment_entry.paid_to = company.default_cash_account
+      payment_entry.mode_of_payment = self.mode_of_payment
+      payment_entry.paid_to = pay_account
       payment_entry.paid_from = company.default_receivable_account
       payment_entry.party_type = 'Customer'
       payment_entry.party = 'Hotel Walk In Customer'
-      payment_entry.received_amount = self.amount_paid
       payment_entry.paid_amount = self.amount_paid
+      payment_entry.received_amount = self.amount_paid
+      payment_entry.guest_id = self.guest_id
+      payment_entry.reference_date = reference_date
+      payment_entry.reference_no = payment_reference
       payment_entry.remarks = 'Room ' + str(self.room)
       payment_entry.insert(ignore_permissions=True)
       payment_entry.submit()
@@ -64,9 +86,14 @@ class HotelPaymentEntry(Document):
         #  Creating JV for Refund
         jv = frappe.new_doc('Journal Entry')
         jv.voucher_type = 'Journal Entry'
-        jv.naming_series = 'ACC-JV-.YYYY.-'
+        # jv.naming_series = 'ACC-JV-.YYYY.-'
         jv.posting_date = frappe.utils.data.today()
         jv.company = self.company
+        jv.cheque_date = reference_date
+        jv.cheque_no = payment_reference
+        jv.guest_id = self.guest_id
+        jv.bill_no = self.name
+        jv.pay_to_recd_from = self.guest_name
         jv.user_remark = 'Refund for Room {} Check In ID: {}'.format( self.room, self.check_in_id)
 
 
@@ -79,7 +106,7 @@ class HotelPaymentEntry(Document):
               })
         # Entry For Cash Account
         jv.append('accounts', {
-                  'account': company.default_cash_account,
+                  'account': pay_account,
                   'credit_in_account_currency': self.amount_paid
               })
         

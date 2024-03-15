@@ -57,7 +57,7 @@ class HotelCheckIn(Document):
             'guest_id': self.guest_id,
             'check_in_id': self.name,
             'guest_name': self.guest_name,
-            'contact_no': self.contact_no
+            'contact_no': self.contact_no,
             'mode_of_payment': self.mode_of_payment
         })
         payment_doc.save()
@@ -92,8 +92,8 @@ class HotelCheckIn(Document):
             'debit_to': company.default_receivable_account
         })
 
-        for item in self.rooms:
-            item_doc = frappe.get_doc('Item', item.item)
+        for room in self.rooms:
+            item_doc = frappe.get_doc('Item', room.room_no)
             default_income_account = company.default_income_account
 
             if item.is_pos == 1:
