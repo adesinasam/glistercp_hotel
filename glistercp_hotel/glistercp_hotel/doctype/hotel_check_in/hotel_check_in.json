@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "naming_series:",
  "creation": "2024-01-29 14:57:03.679302",
  "doctype": "DocType",
@@ -10,21 +11,29 @@
   "title",
   "naming_series",
   "guest_id",
+  "customer",
   "guest_photo_attachment",
   "check_in",
-  "expected_check_out",
   "column_break_7",
   "company",
-  "posting_date",
+  "from_date",
+  "to_date",
+  "days",
   "passport_no",
   "cnic",
-  "contact_no",
   "column_break_13",
+  "posting_date",
   "guest_name",
+  "contact_no",
   "guest_photo",
   "room_details_section",
   "rooms",
   "total_amount",
+  "payment_details_section",
+  "discount",
+  "amount_paid",
+  "column_break_8",
+  "mode_of_payment",
   "section_break_17",
   "status",
   "amended_from"
@@ -52,7 +61,7 @@
    "fieldname": "naming_series",
    "fieldtype": "Select",
    "label": "Series",
-   "options": "CHK-IN-.YYYY.-",
+   "options": "CHK-IN-.YY.-",
    "print_hide": 1,
    "read_only": 1,
    "reqd": 1
@@ -66,13 +75,6 @@
    "fieldname": "check_in",
    "fieldtype": "Datetime",
    "label": "Check In",
-   "reqd": 1
-  },
-  {
-   "default": "",
-   "fieldname": "expected_check_out",
-   "fieldtype": "Datetime",
-   "label": "Expected Check Out",
    "reqd": 1
   },
   {
@@ -171,6 +173,7 @@
    "label": "Guest Photo"
   },
   {
+   "allow_in_quick_entry": 1,
    "fieldname": "rooms",
    "fieldtype": "Table",
    "label": "Rooms",
@@ -180,9 +183,9 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
-   "hidden": 1,
    "label": "Total Amount",
    "options": "Currency",
+   "precision": "2",
    "read_only": 1
   },
   {
@@ -193,10 +196,68 @@
    "print_hide": 1,
    "remember_last_selected_value": 1,
    "reqd": 1
+  },
+  {
+   "fieldname": "payment_details_section",
+   "fieldtype": "Section Break",
+   "label": "Payment Details"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode of Payment",
+   "reqd": 1
+  },
+  {
+   "default": "now",
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date",
+   "reqd": 1
+  },
+  {
+   "default": "Hotel Walk In Customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "discount",
+   "fieldtype": "Currency",
+   "label": "Discount",
+   "options": "Currency"
+  },
+  {
+   "fieldname": "amount_paid",
+   "fieldtype": "Currency",
+   "label": "Amount Paid",
+   "precision": "2",
+   "reqd": 1
+  },
+  {
+   "fieldname": "days",
+   "fieldtype": "Data",
+   "label": "No of Night",
+   "precision": "0",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2024-03-03 13:52:44.433659",
+ "links": [],
+ "modified": "2024-03-15 21:13:33.099905",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotel Check In",

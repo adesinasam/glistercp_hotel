@@ -1,4 +1,5 @@
 {
+ "actions": [],
  "autoname": "naming_series:",
  "creation": "2024-01-29 17:13:16.792311",
  "doctype": "DocType",
@@ -51,6 +52,8 @@
   "discount",
   "amount_paid",
   "net_balance_amount",
+  "column_break_srorz",
+  "mode_of_payment",
   "refund",
   "section_break_19",
   "status",
@@ -80,7 +83,7 @@
    "fieldtype": "Select",
    "hidden": 1,
    "label": "Series",
-   "options": "CHK-OUT-.YYYY.-\nINV-CHK-OUT-.YYYY.-",
+   "options": "CHK-OUT-.YY.-\nINV-CHK-OUT-.YY.-",
    "print_hide": 1
   },
   {
@@ -211,14 +214,15 @@
    "fieldname": "cnic",
    "fieldtype": "Data",
    "label": "CNIC",
-   "read_only": 1,
-   "reqd": 1
+   "read_only": 1
   },
   {
+   "default": "Hotel Walk In Customer",
    "fieldname": "customer",
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer",
+   "read_only": 1,
    "reqd": 1
   },
   {
@@ -392,10 +396,22 @@
    "label": "Total Bill",
    "options": "Currency",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_srorz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode of Payment",
+   "reqd": 1
   }
  ],
  "is_submittable": 1,
- "modified": "2024-02-16 18:08:42.687231",
+ "links": [],
+ "modified": "2024-03-15 13:42:40.719543",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotel Check Out",
