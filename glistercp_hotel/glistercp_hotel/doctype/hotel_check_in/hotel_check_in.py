@@ -24,14 +24,14 @@ class HotelCheckIn(Document):
             room_doc = frappe.get_doc('Rooms', room.room_no)
             room_doc.db_set('check_in_id', self.name)
             room_doc.db_set('room_status', 'Checked In')
-        # check_in_doc = frappe.get_doc('Hotel Check In', self.name)
+        check_in_doc = frappe.get_doc('Hotel Check In', self.name)
         all_checked_in = 1
         # send_payment_sms(self)
 
-        # # Setting Check In doc to Complete
-        # for room in check_in_doc.rooms:
-        #     if frappe.db.get_value('Rooms', room.room_no, 'room_status') == 'Available':
-        #         all_checked_in = 0
+        # Setting Check In doc to Complete
+        for room in check_in_doc.rooms:
+            if frappe.db.get_value('Rooms', room.room_no, 'room_status') == 'Available':
+                all_checked_in = 0
 
         # Creating Additional Hotel Payment Vouchers
         if self.amount_paid > 0 and self.customer == 'Hotel Walk In Customer':
@@ -50,18 +50,19 @@ class HotelCheckIn(Document):
             room_doc.db_set('room_status', 'Available')
 
     def create_payment_entry(self, amount_paid, entry_type='Receive'):
-        payment_doc = frappe.new_doc('Hotel Payment Entry')
-        payment_doc.update({
-            'room': self.room,
-            'amount_paid': amount_paid,
-            'guest_id': self.guest_id,
-            'check_in_id': self.name,
-            'guest_name': self.guest_name,
-            'contact_no': self.contact_no,
-            'mode_of_payment': self.mode_of_payment
-        })
-        payment_doc.save()
-        payment_doc.submit()
+        for item in self.rooms:
+            payment_doc = frappe.new_doc('Hotel Payment Entry')
+            payment_doc.update({
+                'room': item.room_no,
+                'amount_paid': amount_paid,
+                'guest_id': self.guest_id,
+                'check_in_id': self.name,
+                'guest_name': self.guest_name,
+                'contact_no': self.contact_no,
+                'mode_of_payment': self.mode_of_payment
+            })
+            payment_doc.save()
+            payment_doc.submit()
 
     def create_sales_invoice(self, all_checked_in):
         if self.customer == 'Hotel Walk In Customer':
@@ -96,8 +97,8 @@ class HotelCheckIn(Document):
             item_doc = frappe.get_doc('Item', item.room_no)
             default_income_account = company.default_income_account
 
-            if item.is_pos == 1:
-                default_income_account = item_doc.get_income_account()
+            # if item.is_pos == 1:
+            #     default_income_account = item_doc.get_income_account()
 
             sales_invoice_doc.append('items', {
                 'item_code': item_doc.item_code,

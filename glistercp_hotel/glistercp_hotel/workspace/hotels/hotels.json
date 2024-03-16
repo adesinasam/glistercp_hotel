@@ -87,8 +87,8 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Room",
-   "link_to": "Room",
+   "label": "Rooms",
+   "link_to": "Rooms",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -138,7 +138,7 @@
    "type": "Link"
   }
  ],
- "modified": "2024-03-15 17:11:03.688483",
+ "modified": "2024-03-16 12:23:03.512390",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotels",
@@ -160,8 +160,8 @@
   },
   {
    "doc_view": "List",
-   "label": "Hotel Room",
-   "link_to": "Room",
+   "label": "Rooms",
+   "link_to": "Rooms",
    "type": "DocType"
   },
   {
