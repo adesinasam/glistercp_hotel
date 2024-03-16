@@ -24,8 +24,14 @@ class HotelCheckIn(Document):
             room_doc = frappe.get_doc('Rooms', room.room_no)
             room_doc.db_set('check_in_id', self.name)
             room_doc.db_set('room_status', 'Checked In')
+        # check_in_doc = frappe.get_doc('Hotel Check In', self.name)
         all_checked_in = 1
         # send_payment_sms(self)
+
+        # # Setting Check In doc to Complete
+        # for room in check_in_doc.rooms:
+        #     if frappe.db.get_value('Rooms', room.room_no, 'room_status') == 'Available':
+        #         all_checked_in = 0
 
         # Creating Additional Hotel Payment Vouchers
         if self.amount_paid > 0 and self.customer == 'Hotel Walk In Customer':
