@@ -24,14 +24,8 @@ class HotelCheckIn(Document):
             room_doc = frappe.get_doc('Rooms', room.room_no)
             room_doc.db_set('check_in_id', self.name)
             room_doc.db_set('room_status', 'Checked In')
-        check_in_doc = frappe.get_doc('Hotel Check In', self.name)
         all_checked_in = 1
         # send_payment_sms(self)
-
-        # Setting Check In doc to Complete
-        for room in check_in_doc.rooms:
-            if frappe.db.get_value('Rooms', room.room_no, 'room_status') == 'Available':
-                all_checked_in = 0
 
         # Creating Additional Hotel Payment Vouchers
         if self.amount_paid > 0 and self.customer == 'Hotel Walk In Customer':
@@ -67,18 +61,18 @@ class HotelCheckIn(Document):
         if self.customer == 'Hotel Walk In Customer':
             self.create_invoice('Hotel Walk In Customer', self.name)
 
-        if all_checked_in == 1 or self.customer != 'Hotel Walk In Customer':
-            create_walk_in_invoice = any(item.is_pos == 1 for item in self.rooms)
-            if create_walk_in_invoice:
-                self.create_invoice('Hotel Walk In Customer', self.name)
+        # if all_checked_in == 1 or self.customer != 'Hotel Walk In Customer':
+        #     create_walk_in_invoice = any(item.is_pos == 1 for item in self.rooms)
+        #     if create_walk_in_invoice:
+        #         self.create_invoice('Hotel Walk In Customer', self.name)
 
-            check_out_list = frappe.get_list('Hotel Check In', filters={
-                'docstatus': 1,
-                'check_in_id': self.name,
-                'customer': ['not like', 'Hotel Walk In Customer']
-            }, order_by='name asc')
-            if all_checked_in == 1 and check_out_list:
-                self.create_invoice(check_out_list[0].customer, self.name)
+        #     check_out_list = frappe.get_list('Hotel Check In', filters={
+        #         'docstatus': 1,
+        #         'check_in_id': self.name,
+        #         'customer': ['not like', 'Hotel Walk In Customer']
+        #     }, order_by='name asc')
+        #     if all_checked_in == 1 and check_out_list:
+        #         self.create_invoice(check_out_list[0].customer, self.name)
 
     def create_invoice(self, customer, check_in_id):
         sales_invoice_doc = frappe.new_doc('Sales Invoice')
