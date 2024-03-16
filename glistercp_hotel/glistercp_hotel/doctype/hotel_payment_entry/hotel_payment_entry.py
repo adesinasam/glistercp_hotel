@@ -45,7 +45,7 @@ class HotelPaymentEntry(Document):
 
     pay_account = ""
 
-    pay_type = frappe.db.get_value('Mode of Payment Account', 'type')
+    pay_type = frappe.db.get_value('Mode of Payment', 'type')
     if (pay_type != "Cash"):
         reference_date = frappe.utils.data.today()
         payment_reference = 0
