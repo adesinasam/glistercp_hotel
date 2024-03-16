@@ -92,20 +92,20 @@ class HotelCheckIn(Document):
             'debit_to': company.default_receivable_account
         })
 
-        for room in self.rooms:
-            item_doc = frappe.get_doc('Item', room.room_no)
+        for item in self.rooms:
+            item_doc = frappe.get_doc('Item', item.room_no)
             default_income_account = company.default_income_account
 
             if item.is_pos == 1:
                 default_income_account = item_doc.get_income_account()
 
-            sales_invoice_doc.append('rooms', {
+            sales_invoice_doc.append('items', {
                 'item_code': item_doc.item_code,
                 'item_name': item_doc.item_name,
                 'description': item_doc.description,
                 'qty': item.qty,
                 'uom': item_doc.stock_uom,
-                'price': item.rate,
+                'rate': item.price,
                 'amount': item.amount,
                 'income_account': default_income_account
             })
