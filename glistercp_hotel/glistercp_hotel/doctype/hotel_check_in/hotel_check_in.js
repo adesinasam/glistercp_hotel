@@ -144,12 +144,12 @@ frappe.ui.form.on('Hotel Check In Room', {
           row.price = r.message;
           row.amount = r.qty * row.price;
           frm.refresh_field('rooms')
-        });
+        // });
         // frm.call('calculate_stay_days').then( r => {
         //   row.qty = r.message;
         //   row.amount = r.message * row.price;
         //   frm.refresh_field('rooms')
-        // })
+        })
       }
     }
     frm.trigger('total_amount');
