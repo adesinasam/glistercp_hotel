@@ -142,13 +142,14 @@ frappe.ui.form.on('Hotel Check In Room', {
       else {
         frm.call('get_room_price',{room: row.room_no}).then( r => {
           row.price = r.message;
+          row.amount = r.qty * row.price;
           frm.refresh_field('rooms')
         });
-        frm.call('calculate_stay_days').then( r => {
-          row.qty = r.message;
-          row.amount = r.message * row.price;
-          frm.refresh_field('rooms')
-        })
+        // frm.call('calculate_stay_days').then( r => {
+        //   row.qty = r.message;
+        //   row.amount = r.message * row.price;
+        //   frm.refresh_field('rooms')
+        // })
       }
     }
     frm.trigger('total_amount');
@@ -163,6 +164,7 @@ frappe.ui.form.on('Hotel Check In Room', {
      let item = locals[cdt][cdn]; 
      item.from_date = frm.doc.from_date;
      item.to_date = frm.doc.to_date;
+     item.qty = frm.doc.days;
      frm.refresh_field('rooms');
   },
 
