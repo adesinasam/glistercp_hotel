@@ -154,7 +154,7 @@ frappe.ui.form.on('Hotel Check In Room', {
       else {
         frm.call('get_room_price',{room: row.room_no}).then( r => {
           row.price = r.message;
-          frappe.model.set_value(cdt, cdn, 'price', r.message);
+          // frappe.model.set_value(cdt, cdn, 'price', r.message);
           frm.refresh_field('rooms')
         });
         frm.call('calculate_stay_days').then( r => {
