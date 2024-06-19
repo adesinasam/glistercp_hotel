@@ -11,12 +11,14 @@
   "room_no",
   "column_break_2",
   "room_type",
-  "section_break_hsku3",
+  "column_break_3",
   "qty",
-  "column_break_4",
+  "section_break_hsku3",
   "price",
   "column_break_mgcxj",
   "amount",
+  "column_break_4",
+  "amt_paid",
   "guests_details_section",
   "male",
   "column_break_8",
@@ -30,6 +32,7 @@
  ],
  "fields": [
   {
+   "columns": 1,
    "fieldname": "room_no",
    "fieldtype": "Link",
    "in_list_view": 1,
@@ -52,6 +55,7 @@
    "label": "Guests Details"
   },
   {
+   "columns": 1,
    "fieldname": "male",
    "fieldtype": "Int",
    "in_list_view": 1,
@@ -62,6 +66,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "columns": 1,
    "fieldname": "female",
    "fieldtype": "Int",
    "in_list_view": 1,
@@ -95,6 +100,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "columns": 2,
    "fetch_from": "room_no.room_type",
    "fieldname": "room_type",
    "fieldtype": "Link",
@@ -105,6 +111,7 @@
    "reqd": 1
   },
   {
+   "columns": 1,
    "fieldname": "price",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -140,9 +147,11 @@
    "fieldtype": "Section Break"
   },
   {
+   "columns": 1,
    "default": "1",
    "fieldname": "qty",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "No of Nights",
    "precision": "0",
    "read_only": 1,
@@ -153,15 +162,30 @@
    "fieldtype": "Column Break"
   },
   {
+   "columns": 2,
    "fieldname": "amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Amount",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "columns": 2,
+   "fieldname": "amt_paid",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount Paid",
+   "precision": "2",
+   "reqd": 1
   }
  ],
  "istable": 1,
  "links": [],
- "modified": "2024-03-15 22:20:22.814266",
+ "modified": "2024-06-19 03:00:16.307162",
  "modified_by": "Administrator",
  "module": "Glistercp Hotel",
  "name": "Hotel Check In Room",

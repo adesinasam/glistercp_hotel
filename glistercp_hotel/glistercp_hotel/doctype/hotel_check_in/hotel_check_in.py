@@ -54,7 +54,7 @@ class HotelCheckIn(Document):
             payment_doc = frappe.new_doc('Hotel Payment Entry')
             payment_doc.update({
                 'room': item.room_no,
-                'amount_paid': amount_paid,
+                'amount_paid': item.amt_paid,
                 'guest_id': self.guest_id,
                 'check_in_id': self.name,
                 'guest_name': self.guest_name,
