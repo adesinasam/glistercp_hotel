@@ -110,19 +110,27 @@ frappe.ui.form.on("Hotel Check In", {
   },
 
   is_complimentary: function(frm){
-    frm.doc.customer = "Room Complimentary";
-    frm.refresh_field('customer');
+    if (is_complimentary = 1){
+      frm.doc.customer = "Room Complimentary";
+      frm.refresh_field('customer');
+    }
+    else {
+      frm.doc.customer = "Hotel Walk In Customer";
+      frm.refresh_field('customer');    
+    }
+    frm.trigger("total_amount");  
   },
 
   discount: function(frm){
-    var temp_discount = frm.doc.total_amount;
-    if (is_complimentary = 1){
-      frm.doc.discount = temp_discount;
-    }
-    frm.trigger("total");
+    frm.trigger("total_amount");
   },
 
   total_amount: function(frm){
+    if (is_complimentary = 1){
+      frm.doc.discount = frm.doc.total_amount;
+      frm.refresh_field('discount');    
+    }
+
     var temp_amount_paid = 0;
     for (var i in frm.doc.rooms){
       if (frm.doc.rooms[i].price){
@@ -151,7 +159,7 @@ frappe.ui.form.on("Hotel Check In", {
   },
 
   amount_paid: function(frm){
-    frm.trigger("total");
+    frm.trigger("total_amount");
   }
 
 });
