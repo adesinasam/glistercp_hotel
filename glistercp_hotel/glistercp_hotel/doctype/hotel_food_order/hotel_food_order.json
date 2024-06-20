@@ -19,6 +19,7 @@
   "posting_date",
   "date",
   "check_in_id",
+  "guest_id",
   "guest_name",
   "section_break_8",
   "items",
@@ -138,6 +139,15 @@
    "fieldtype": "Link",
    "label": "Check In ID",
    "options": "Hotel Check In",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "room.guest_id",
+   "fieldname": "guest_id",
+   "fieldtype": "Link",
+   "label": "Guest Id",
+   "options": "Hotel Guests",
+   "hidden": 1,
    "read_only": 1
   },
   {

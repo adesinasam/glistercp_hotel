@@ -11,6 +11,7 @@
   "column_break_4",
   "room_type",
   "check_in_id",
+  "guest_id",
   "guest_name",
   "column_break_8",
   "price",
@@ -68,6 +69,15 @@
    "fieldtype": "Link",
    "label": "Check In ID",
    "options": "Hotel Check In",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "check_in_id.guest_id",
+   "fieldname": "guest_id",
+   "fieldtype": "Link",
+   "label": "Guest ID",
+   "options": "Hotel Guests",
+   "hidden": 1,
    "read_only": 1
   },
   {
