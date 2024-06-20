@@ -122,13 +122,18 @@ class HotelCheckIn(Document):
         stay_days = date_diff(self.to_date, self.from_date)
         return stay_days
 
+    # @frappe.whitelist()
+    # def get_room_price(self, room):
+    #     room_price = frappe.get_value('Rooms', {
+    #         'room_number': room
+    #     }, [
+    #         'price'
+    #     ])
+    #     return room_price
+
     @frappe.whitelist()
     def get_room_price(self, room):
-        room_price = frappe.get_value('Rooms', {
-            'room_number': room
-        }, [
-            'price'
-        ])
+        room_price = frappe.get_value('Rooms', {'room_number': room}, 'price')
         return room_price
 
 
