@@ -3,16 +3,17 @@
 
 frappe.ui.form.on("Hotel Check In", {
   setup: function(frm) {
-    // setting query for rooms to be visible in list
-    frm.set_query('room_no','rooms', function (doc){
-      return{
+    // Set query for available rooms
+    frm.set_query('room_no', 'rooms', function() {
+      return {
         filters: {
           room_status: 'Available'
         }
-      }
+      };
     });
-    // setting query for customers to be visible in list
-    frm.set_query("customer", function(doc) {
+
+    // Set query for all customer groups
+    frm.set_query("customer", function() {
       return {
         filters: {
           customer_group: "All Customer Groups"
@@ -20,227 +21,211 @@ frappe.ui.form.on("Hotel Check In", {
       };
     });
   },
-  
-  guest_id: function(frm){
-    var image_html = '<img src="' + frm.doc.guest_photo_attachment + '">';
-    $(frm.fields_dict['guest_photo'].wrapper).html(image_html);
-    frm.refresh_field('guest_photo');
-  },
-  
-  refresh: function(frm){  
-    var image_html = '<img src="' + frm.doc.guest_photo_attachment + '">';
-    $(frm.fields_dict['guest_photo'].wrapper).html(image_html);
-    frm.refresh_field('guest_photo');
+
+  guest_id: function(frm) {
+    update_guest_photo(frm);
   },
 
-  validate: function(frm){
-    for (var i in frm.doc.rooms){
-      if (frm.doc.rooms[i].male == 0 && frm.doc.rooms[i].female == 0 && frm.doc.rooms[i].children == 0){
-        frappe.throw('Please Enter Guests Details for Room ' + frm.doc.rooms[i].room_no);
-      }
-    }
-    if (frm.doc.check_in < frm.doc.from_date) {
-      frm.doc.check_in = "";
-      frm.refresh_fields();
-      frappe.throw(__("Check in cannot be before From Date"));
-    }
-    if (frm.doc.to_date < frm.doc.from_date) {
-      frm.doc.to_date = "";
-      frm.refresh_fields();
-      frappe.throw(__("To Date cannot be before From Date"));
-    }
+  refresh: function(frm) {
+    update_guest_photo(frm);
+  },
+
+  validate: function(frm) {
+    validate_rooms(frm);
+    validate_dates(frm);
   },
 
   from_date: function(frm) {
-    if (frm.doc.from_date < frappe.datetime.get_today()) {
-      frm.doc.from_date = "";
-      frm.refresh_fields();
-      frappe.throw(__("You can not select past date"));
-    }
-    for (var i in doc.rooms) {
-          doc.rooms[i].from_date = frm.doc.from_date;
-          frm.refresh_field("rooms");
-    }
-    frm.refresh_field("rooms");
+    validate_past_date(frm, 'from_date');
+    update_rooms_dates(frm, 'from_date');
   },
 
   check_in: function(frm) {
-    if (frm.doc.check_in < frappe.datetime.get_today()) {
-      frm.doc.check_in = "";
-      frm.refresh_fields();
-      frappe.throw(__("You can not select past date"));
-    }
+    validate_past_date(frm, 'check_in');
   },
 
   to_date: function(frm) {
-    if (frm.doc.to_date < frappe.datetime.get_today()) {
-      frm.doc.to_date = "";
-      frm.refresh_fields();
-      frappe.throw(__("You can not select past date"));
-    }
-    frm.call('calculate_stay_days').then(r => {
-      if (r.message) {
-        if (r.message > -1) {
-          var doc = frm.doc;
-          var days = 0;
-          if (r.message == 0) {
-            days = 1;
-          } else {
-            days = r.message;
-          }
-          for (var i in doc.rooms) {
-            if (doc.rooms[i].room_no) {
-                doc.rooms[i].to_date = frm.doc.to_date;
-                doc.rooms[i].qty = days;
-                doc.rooms[i].amount = days * doc.rooms[i].price;
-                frm.refresh_field("rooms");
-            }
-          }
-          frm.doc.days = days;
-          frm.refresh_field('days');
-          frm.refresh_field('rooms');
-          frm.trigger("total_amount");
-        } else {
-          frm.doc.to_date = undefined;
-          frm.refresh_field("to_date");
-          frappe.msgprint("To Date cannot be before From Date.");
-        }
-      }
-    });
+    validate_past_date(frm, 'to_date');
+    calculate_stay_days_and_update(frm);
   },
 
-  is_complimentary: function(frm){
-    if (is_complimentary = 1){
-      frm.doc.customer = "Room Complimentary";
-      frm.refresh_field('customer');
-    }
-    else {
-      frm.doc.customer = "Hotel Walk In Customer";
-      frm.refresh_field('customer');    
-    }
-    frm.trigger("total_amount");  
-  },
-
-  discount: function(frm){
+  is_complimentary: function(frm) {
+    update_customer(frm);
     frm.trigger("total_amount");
   },
 
-  total_amount: function(frm){
-    if (is_complimentary = 1){
-      frm.doc.discount = frm.doc.total_amount;
-      frm.refresh_field('discount');    
-    }
-
-    var temp_amount_paid = 0;
-    for (var i in frm.doc.rooms){
-      if (frm.doc.rooms[i].price){
-        temp_amount_paid += frm.doc.rooms[i].amt_paid;
-      }
-    }
-    frm.doc.amount_paid = temp_amount_paid;
-
-    var temp_total_amount = 0;
-    for (var i in frm.doc.rooms){
-      if (frm.doc.rooms[i].price){
-        temp_total_amount += frm.doc.rooms[i].amount;
-      }
-    }
-    frm.doc.total_amount = temp_total_amount;
-
-    frm.doc.net_balance_amount = 0;
-    var temp_net_balance_amount = temp_total_amount - frm.doc.discount - temp_amount_paid;
-    if (temp_net_balance_amount > 0){
-      frm.doc.net_balance_amount = temp_net_balance_amount;
-    }
-
-    frm.refresh_field('amount_paid');
-    frm.refresh_field('total_amount');
-    frm.refresh_field('net_balance_amount');
+  discount: function(frm) {
+    frm.trigger("total_amount");
   },
 
-  amount_paid: function(frm){
+  total_amount: function(frm) {
+    update_total_amount(frm);
+  },
+
+  amount_paid: function(frm) {
     frm.trigger("total_amount");
   }
-
 });
 
 frappe.ui.form.on('Hotel Check In Room', {
   room_no: function(frm, cdt, cdn) {
-    let count = 0;
-    let row = frappe.get_doc(cdt, cdn)
-    if (row.room_no){
-      for(var i in frm.doc.rooms){
-        if (frm.doc.rooms[i].room_no == row.room_no){
-          count += 1;
-        }
-      }
-      if (count>1){
-        let alert = 'Room ' + row.room_no + ' already selected';
-        row.room_no = undefined;
-        row.room_type = undefined;
-        row.price = undefined;
-        frm.refresh_field('rooms')
-        frappe.throw(alert)
-      }
-      else {
-        frm.call('get_room_price',{room: row.room_no}).then( r => {
-          row.price = r.message;
-          // frappe.model.set_value(cdt, cdn, 'price', r.message);
-          frm.refresh_field('rooms')
-        });
-        frm.call('calculate_stay_days').then( r => {
-          row.qty = r.message;
-          row.amount = r.message * row.price;
-          frm.refresh_field('rooms')
-        })
-      }
-    }
-    frm.trigger('total_amount');
+    handle_room_selection(frm, cdt, cdn);
   },
 
   rooms_remove: function(frm) {
     frm.trigger('total_amount');
   },
 
-
-  form_render: function(frm,cdt,cdn) {
-     let item = locals[cdt][cdn]; 
-     item.from_date = frm.doc.from_date;
-     item.to_date = frm.doc.to_date;
-     item.qty = frm.doc.days;
-     frm.refresh_field('rooms');
+  form_render: function(frm, cdt, cdn) {
+    update_room_dates(frm, cdt, cdn);
   },
 
   from_date: function(doc, cdt, cdn) {
-    var child = locals[cdt][cdn];
-    if (child.from_date < frappe.datetime.get_today()) {
-      child.from_date = "";
-      cur_frm.refresh_fields();
-      frappe.throw(__("You can not select past date"));
-    }
+    validate_child_past_date(cdt, cdn, 'from_date');
   },
+
   to_date: function(doc, cdt, cdn) {
-    var child = locals[cdt][cdn];
-    if (child.to_date < child.from_date) {
-      child.to_date = "";
-      cur_frm.refresh_fields();
-      frappe.throw(__("Invalid Check Out date"));
+    validate_child_to_date(cdt, cdn);
+  }
+});
+
+// Helper functions
+function update_guest_photo(frm) {
+  var image_html = '<img src="' + frm.doc.guest_photo_attachment + '">';
+  $(frm.fields_dict['guest_photo'].wrapper).html(image_html);
+  frm.refresh_field('guest_photo');
+}
+
+function validate_rooms(frm) {
+  frm.doc.rooms.forEach(function(room) {
+    if (!room.male && !room.female && !room.children) {
+      frappe.throw('Please Enter Guests Details for Room ' + room.room_no);
+    }
+  });
+}
+
+function validate_dates(frm) {
+  if (frm.doc.check_in < frm.doc.from_date) {
+    frm.doc.check_in = "";
+    frm.refresh_fields();
+    frappe.throw(__("Check in cannot be before From Date"));
+  }
+  if (frm.doc.to_date < frm.doc.from_date) {
+    frm.doc.to_date = "";
+    frm.refresh_fields();
+    frappe.throw(__("To Date cannot be before From Date"));
+  }
+}
+
+function validate_past_date(frm, field) {
+  if (frm.doc[field] < frappe.datetime.get_today()) {
+    frm.doc[field] = "";
+    frm.refresh_fields();
+    frappe.throw(__("You cannot select a past date"));
+  }
+}
+
+function update_rooms_dates(frm, field) {
+  frm.doc.rooms.forEach(function(room) {
+    room[field] = frm.doc[field];
+  });
+  frm.refresh_field("rooms");
+}
+
+function calculate_stay_days_and_update(frm) {
+  frm.call('calculate_stay_days').then(r => {
+    if (r.message >= 0) {
+      var days = r.message || 1;
+      frm.doc.rooms.forEach(function(room) {
+        if (room.room_no) {
+          room.to_date = frm.doc.to_date;
+          room.qty = days;
+          room.amount = days * room.price;
+        }
+      });
+      frm.doc.days = days;
+      frm.refresh_field('days');
+      frm.refresh_field('rooms');
+      frm.trigger("total_amount");
+    } else {
+      frm.doc.to_date = undefined;
+      frm.refresh_field("to_date");
+      frappe.msgprint("To Date cannot be before From Date.");
+    }
+  });
+}
+
+function update_customer(frm) {
+  frm.doc.customer = frm.doc.is_complimentary ? "Room Complimentary" : "Hotel Walk In Customer";
+  frm.refresh_field('customer');
+}
+
+function update_total_amount(frm) {
+  if (frm.doc.is_complimentary) {
+    frm.doc.discount = frm.doc.total_amount;
+    frm.refresh_field('discount');
+  }
+
+  frm.doc.amount_paid = frm.doc.rooms.reduce((sum, room) => sum + (room.amt_paid || 0), 0);
+  frm.doc.total_amount = frm.doc.rooms.reduce((sum, room) => sum + (room.amount || 0), 0);
+  frm.doc.net_balance_amount = Math.max(0, frm.doc.total_amount - frm.doc.discount - frm.doc.amount_paid);
+
+  frm.refresh_field('amount_paid');
+  frm.refresh_field('total_amount');
+  frm.refresh_field('net_balance_amount');
+}
+
+function handle_room_selection(frm, cdt, cdn) {
+  let row = frappe.get_doc(cdt, cdn);
+  if (row.room_no) {
+    let room_count = frm.doc.rooms.filter(room => room.room_no === row.room_no).length;
+    if (room_count > 1) {
+      row.room_no = row.room_type = row.price = undefined;
+      frm.refresh_field('rooms');
+      frappe.throw(`Room ${row.room_no} already selected`);
+    } else {
+      update_room_price_and_qty(frm, row);
     }
   }
-  // room_no: function(doc, cdt, cdn){
-  //   var child = locals[cdt][cdn];
-  //   frappe.call({
-  //     method: 'hotel_management.hotel_management.doctype.hotel_booking.hotel_booking.get_bookings',
-  //     args:{"start":child.from_date,
-  //     "end": child.to_date,
-  //     "room": child.room_no
-  //   },
-  //   callback: function(r){
-  //     /*child.from_date = "";
-  //     child.to_date = "";
-  //     child.room_no = "";*/
-  //     cur_frm.refresh_fields();
-  //   }
-  // });
-  // }
-})
+  frm.trigger('total_amount');
+}
+
+function update_room_price_and_qty(frm, row) {
+  frm.call('get_room_price', { room: row.room_no }).then(r => {
+    row.price = r.message;
+    row.amount = r.message * row.qty;
+    frappe.model.set_value(row.doctype, row.name, 'price', r.message);
+    frm.refresh_field('rooms');
+  });
+  frm.call('calculate_stay_days').then(r => {
+    row.qty = r.message;
+    row.amount = r.message * row.price;
+    frm.refresh_field('rooms');
+  });
+}
+
+function update_room_dates(frm, cdt, cdn) {
+  let room = locals[cdt][cdn];
+  room.from_date = frm.doc.from_date;
+  room.to_date = frm.doc.to_date;
+  room.qty = frm.doc.days;
+  frm.refresh_field('rooms');
+}
+
+function validate_child_past_date(cdt, cdn, field) {
+  var child = locals[cdt][cdn];
+  if (child[field] < frappe.datetime.get_today()) {
+    child[field] = "";
+    cur_frm.refresh_fields();
+    frappe.throw(__("You cannot select a past date"));
+  }
+}
+
+function validate_child_to_date(cdt, cdn) {
+  var child = locals[cdt][cdn];
+  if (child.to_date < child.from_date) {
+    child.to_date = "";
+    cur_frm.refresh_fields();
+    frappe.throw(__("Invalid Check Out date"));
+  }
+}
