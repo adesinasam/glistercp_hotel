@@ -112,7 +112,7 @@ class HotelCheckIn(Document):
             })
 
         if self.discount:
-            sales_invoice_doc.discount_amount += self.discount
+            sales_invoice_doc.discount_amount = self.discount
 
         sales_invoice_doc.insert(ignore_permissions=True)
         sales_invoice_doc.submit()

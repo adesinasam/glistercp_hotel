@@ -33,6 +33,7 @@
   "payment_details_section",
   "discount",
   "amount_paid",
+  "net_balance_amount",
   "column_break_8",
   "mode_of_payment",
   "payment_type",
@@ -275,6 +276,13 @@
    "fieldtype": "Date",
    "label": "Reference Date",
    "mandatory_depends_on": "eval:doc.payment_type != \"Cash\""
+  },
+  {
+   "fieldname": "net_balance_amount",
+   "fieldtype": "Currency",
+   "label": "Net Balance Amount",
+   "options": "Currency",
+   "read_only": 1
   },
   {
    "depends_on": "mode_of_payment",

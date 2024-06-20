@@ -100,7 +100,6 @@ frappe.ui.form.on("Hotel Check In", {
           frm.refresh_field('days');
           frm.refresh_field('rooms');
           frm.trigger("total_amount");
-          frm.trigger('amount_paid');
         } else {
           frm.doc.to_date = undefined;
           frm.refresh_field("to_date");
@@ -110,18 +109,20 @@ frappe.ui.form.on("Hotel Check In", {
     });
   },
 
-  total_amount: function(frm){
-    var temp_total_amount = 0;
-    for (var i in frm.doc.rooms){
-      if (frm.doc.rooms[i].price){
-        temp_total_amount += frm.doc.rooms[i].amount;
-      }
-    }
-    frm.doc.total_amount = temp_total_amount;
-    frm.refresh_field('total_amount');
+  is_complimentary: function(frm){
+    frm.doc.customer = "Room Complimentary";
+    frm.refresh_field('customer');
   },
 
-  amount_paid: function(frm){
+  discount: function(frm){
+    var temp_discount = frm.doc.total_amount;
+    if (is_complimentary = 1){
+      frm.doc.discount = temp_discount;
+    }
+    frm.trigger("total");
+  },
+
+  total_amount: function(frm){
     var temp_amount_paid = 0;
     for (var i in frm.doc.rooms){
       if (frm.doc.rooms[i].price){
@@ -129,8 +130,30 @@ frappe.ui.form.on("Hotel Check In", {
       }
     }
     frm.doc.amount_paid = temp_amount_paid;
+
+    var temp_total_amount = 0;
+    for (var i in frm.doc.rooms){
+      if (frm.doc.rooms[i].price){
+        temp_total_amount += frm.doc.rooms[i].amount;
+      }
+    }
+    frm.doc.total_amount = temp_total_amount;
+
+    frm.doc.net_balance_amount = 0;
+    var temp_net_balance_amount = temp_total_amount - frm.doc.discount - temp_amount_paid;
+    if (temp_net_balance_amount > 0){
+      frm.doc.net_balance_amount = temp_net_balance_amount;
+    }
+
     frm.refresh_field('amount_paid');
+    frm.refresh_field('total_amount');
+    frm.refresh_field('net_balance_amount');
+  },
+
+  amount_paid: function(frm){
+    frm.trigger("total");
   }
+
 });
 
 frappe.ui.form.on('Hotel Check In Room', {
@@ -165,12 +188,10 @@ frappe.ui.form.on('Hotel Check In Room', {
       }
     }
     frm.trigger('total_amount');
-    frm.trigger('amount_paid');
   },
 
   rooms_remove: function(frm) {
     frm.trigger('total_amount');
-    frm.trigger('amount_paid');
   },
 
 

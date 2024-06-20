@@ -15,7 +15,7 @@ frappe.ui.form.on("Hotel Food Order", {
     frm.set_query("item", "items", function(doc) {
       return {
         filters: {
-          item_group: "Restaurant"
+          item_group_type: ["in", ["Food", "Bar"]]
         }
       };
     });
