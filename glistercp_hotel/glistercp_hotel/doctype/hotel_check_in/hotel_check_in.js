@@ -1,94 +1,7 @@
 // Copyright (c) 2020, Glistercp and contributors
 // For license information, please see license.txt
-
-frappe.ui.form.on("Hotel Check In", {
-  setup: function(frm) {
-    // Set query for available rooms
-    frm.set_query('room_no', 'rooms', function() {
-      return {
-        filters: {
-          room_status: 'Available'
-        }
-      };
-    });
-
-    // Set query for all customer groups
-    frm.set_query("customer", function() {
-      return {
-        filters: {
-          customer_group: "All Customer Groups"
-        }
-      };
-    });
-  },
-
-  guest_id: function(frm) {
-    update_guest_photo(frm);
-  },
-
-  refresh: function(frm) {
-    update_guest_photo(frm);
-  },
-
-  validate: function(frm) {
-    validate_rooms(frm);
-    validate_dates(frm);
-  },
-
-  from_date: function(frm) {
-    validate_past_date(frm, 'from_date');
-    update_rooms_dates(frm, 'from_date');
-  },
-
-  check_in: function(frm) {
-    validate_past_date(frm, 'check_in');
-  },
-
-  to_date: function(frm) {
-    validate_past_date(frm, 'to_date');
-    calculate_stay_days_and_update(frm);
-  },
-
-  is_complimentary: function(frm) {
-    update_customer(frm);
-    frm.trigger("total_amount");
-  },
-
-  discount: function(frm) {
-    frm.trigger("total_amount");
-  },
-
-  total_amount: function(frm) {
-    update_total_amount(frm);
-  },
-
-  amount_paid: function(frm) {
-    frm.trigger("total_amount");
-  }
-});
-
-frappe.ui.form.on('Hotel Check In Room', {
-  room_no: function(frm, cdt, cdn) {
-    handle_room_selection(frm, cdt, cdn);
-  },
-
-  rooms_remove: function(frm) {
-    frm.trigger('total_amount');
-  },
-
-  form_render: function(frm, cdt, cdn) {
-    update_room_dates(frm, cdt, cdn);
-  },
-
-  from_date: function(doc, cdt, cdn) {
-    validate_child_past_date(cdt, cdn, 'from_date');
-  },
-
-  to_date: function(doc, cdt, cdn) {
-    validate_child_to_date(cdt, cdn);
-  }
-});
-
+frappe.provide("glistercp_hotel.glistercp_hotel");
+ 
 // Helper functions
 function update_guest_photo(frm) {
   var image_html = '<img src="' + frm.doc.guest_photo_attachment + '">';
@@ -180,9 +93,9 @@ function handle_room_selection(frm, cdt, cdn) {
   if (row.room_no) {
     let room_count = frm.doc.rooms.filter(room => room.room_no === row.room_no).length;
     if (room_count > 1) {
+      frappe.throw(`Room ${row.room_no} already selected`);
       row.room_no = row.room_type = row.price = undefined;
       frm.refresh_field('rooms');
-      frappe.throw(`Room ${row.room_no} already selected`);
     } else {
       update_room_price_and_qty(frm, row);
     }
@@ -229,3 +142,93 @@ function validate_child_to_date(cdt, cdn) {
     frappe.throw(__("Invalid Check Out date"));
   }
 }
+
+ 
+frappe.ui.form.on("Hotel Check In", {
+  setup: function(frm) {
+    // Set query for available rooms
+    frm.set_query('room_no', 'rooms', function() {
+      return {
+        filters: {
+          room_status: 'Available'
+        }
+      };
+    });
+
+    // Set query for all customer groups
+    frm.set_query("customer", function() {
+      return {
+        filters: {
+          customer_group: "All Customer Groups"
+        }
+      };
+    });
+  },
+
+  guest_id: function(frm) {
+    update_guest_photo(frm);
+  },
+
+  refresh: function(frm) {
+    update_guest_photo(frm);
+  },
+
+  validate: function(frm) {
+    validate_rooms(frm);
+    validate_dates(frm);
+  },
+
+  from_date: function(frm) {
+    validate_past_date(frm, 'from_date');
+    update_rooms_dates(frm, 'from_date');
+  },
+
+  check_in: function(frm) {
+    validate_past_date(frm, 'check_in');
+  },
+
+  to_date: function(frm) {
+    validate_past_date(frm, 'to_date');
+    calculate_stay_days_and_update(frm);
+  },
+
+  is_complimentary: function(frm) {
+    update_customer(frm);
+    frm.trigger("total_amount");
+  },
+
+  discount: function(frm) {
+    frm.trigger("total_amount");
+  },
+
+  total_amount: function(frm) {
+    update_total_amount(frm);
+  },
+
+  amount_paid: function(frm) {
+    frm.trigger("total_amount");
+  }
+});
+
+frappe.ui.form.on('Hotel Check In Room', {
+  room_no: function(frm, cdt, cdn) {
+    handle_room_selection(frm, cdt, cdn);
+  },
+
+  rooms_remove: function(frm) {
+    frm.trigger('total_amount');
+  },
+
+  form_render: function(frm, cdt, cdn) {
+    update_room_dates(frm, cdt, cdn);
+  },
+
+  from_date: function(doc, cdt, cdn) {
+    validate_child_past_date(cdt, cdn, 'from_date');
+  },
+
+  to_date: function(doc, cdt, cdn) {
+    validate_child_to_date(cdt, cdn);
+  }
+});
+
