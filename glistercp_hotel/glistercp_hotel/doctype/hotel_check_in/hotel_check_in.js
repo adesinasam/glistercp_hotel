@@ -203,7 +203,7 @@ function update_room_price_and_qty(frm, row) {
     frappe.model.set_value(row.doctype, row.name, 'price', r.message);
     frm.refresh_field('price');
     frm.refresh_field('amount');
-    frm.refresh_field('rooms');
+    refresh_field('rooms');
   });
   // frm.call('calculate_stay_days').then(r => {
   //   row.qty = r.message;
@@ -217,7 +217,10 @@ function update_room_dates(frm, cdt, cdn) {
   room.from_date = frm.doc.from_date;
   room.to_date = frm.doc.to_date;
   room.qty = frm.doc.days;
-  frm.refresh_field('rooms');
+  frm.refresh_field('from_date');
+  frm.refresh_field('to_date');
+  frm.refresh_field('qty');
+  refresh_field('rooms');
 }
 
 function validate_child_past_date(cdt, cdn, field) {
