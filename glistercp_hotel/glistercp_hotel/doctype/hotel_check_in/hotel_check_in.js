@@ -167,16 +167,12 @@ function update_total_amount(frm) {
     frm.refresh_field('discount');
   }
 
-  temp_total_amount = frm.doc.rooms.reduce((sum, room) => sum + (room.amount || 0), 0);
-  temp_amount_paid = frm.doc.rooms.reduce((sum, room) => sum + (room.amt_paid || 0), 0);
-  temp_net_balance_amount = Math.max(0, frm.doc.total_amount - frm.doc.discount - frm.doc.amount_paid);
-  
-  frm.set_value("total_amount", temp_total_amount);
-  frm.set_value("amount_paid", temp_amount_paid);
-  frm.set_value("net_balance_amount", temp_net_balance_amount);
+  frm.doc.amount_paid = frm.doc.rooms.reduce((sum, room) => sum + (room.amt_paid || 0), 0);
+  frm.doc.total_amount = frm.doc.rooms.reduce((sum, room) => sum + (room.amount || 0), 0);
+  frm.doc.net_balance_amount = Math.max(0, frm.doc.total_amount - frm.doc.discount - frm.doc.amount_paid);
 
-  frm.refresh_field('total_amount');
   frm.refresh_field('amount_paid');
+  frm.refresh_field('total_amount');
   frm.refresh_field('net_balance_amount');
 }
 
@@ -203,7 +199,7 @@ function update_room_price_and_qty(frm, row) {
     frappe.model.set_value(row.doctype, row.name, 'price', r.message);
     frm.refresh_field('price');
     frm.refresh_field('amount');
-    refresh_field('rooms');
+    frm.refresh_field('rooms');
   });
   // frm.call('calculate_stay_days').then(r => {
   //   row.qty = r.message;
@@ -217,10 +213,7 @@ function update_room_dates(frm, cdt, cdn) {
   room.from_date = frm.doc.from_date;
   room.to_date = frm.doc.to_date;
   room.qty = frm.doc.days;
-  frm.refresh_field('from_date');
-  frm.refresh_field('to_date');
-  frm.refresh_field('qty');
-  refresh_field('rooms');
+  frm.refresh_field('rooms');
 }
 
 function validate_child_past_date(cdt, cdn, field) {
