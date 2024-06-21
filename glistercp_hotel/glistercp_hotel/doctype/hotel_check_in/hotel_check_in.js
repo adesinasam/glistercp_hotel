@@ -181,9 +181,10 @@ function handle_room_selection(frm, cdt, cdn) {
   if (row.room_no) {
     let room_count = frm.doc.rooms.filter(room => room.room_no === row.room_no).length;
     if (room_count > 1) {
-      frappe.throw(`Room ${row.room_no} already selected`);
+      let alert = 'Room ' + row.room_no + ' already selected';
       row.room_no = row.room_type = row.price = undefined;
       frm.refresh_field('rooms');
+      frappe.throw(alert);   
     } else {
       update_room_price_and_qty(frm, row);
     }
