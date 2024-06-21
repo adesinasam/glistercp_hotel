@@ -52,11 +52,11 @@ frappe.ui.form.on("Hotel Check In", {
 
   is_complimentary: function(frm) {
     update_customer(frm);
-    frm.trigger("total_amount");
+    update_total_amount(frm);
   },
 
   discount: function(frm) {
-    frm.trigger("total_amount");
+    update_total_amount(frm);
   },
 
   total_amount: function(frm) {
@@ -64,7 +64,7 @@ frappe.ui.form.on("Hotel Check In", {
   },
 
   amount_paid: function(frm) {
-    frm.trigger("total_amount");
+    update_total_amount(frm);
   }
 });
 
@@ -74,15 +74,15 @@ frappe.ui.form.on('Hotel Check In Room', {
   },
 
   amount: function(frm, cdt, cdn) {
-    frm.trigger('total_amount');
+    update_total_amount(frm);
   },
 
   amt_paid: function(frm, cdt, cdn) {
-    frm.trigger('total_amount');
+    update_total_amount(frm);
   },
 
   rooms_remove: function(frm) {
-    frm.trigger('total_amount');
+    update_total_amount(frm);
   },
 
   form_render: function(frm, cdt, cdn) {
@@ -197,7 +197,7 @@ function handle_room_selection(frm, cdt, cdn) {
       update_room_price_and_qty(frm, row);
     }
   }
-  frm.trigger('total_amount');
+  update_total_amount(frm);
 }
 
 function update_room_price_and_qty(frm, row) {
