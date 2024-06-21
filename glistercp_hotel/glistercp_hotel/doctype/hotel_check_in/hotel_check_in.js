@@ -167,12 +167,16 @@ function update_total_amount(frm) {
     frm.refresh_field('discount');
   }
 
-  frm.doc.amount_paid = frm.doc.rooms.reduce((sum, room) => sum + (room.amt_paid || 0), 0);
-  frm.doc.total_amount = frm.doc.rooms.reduce((sum, room) => sum + (room.amount || 0), 0);
-  frm.doc.net_balance_amount = Math.max(0, frm.doc.total_amount - frm.doc.discount - frm.doc.amount_paid);
+  temp_total_amount = frm.doc.rooms.reduce((sum, room) => sum + (room.amount || 0), 0);
+  temp_amount_paid = frm.doc.rooms.reduce((sum, room) => sum + (room.amt_paid || 0), 0);
+  temp_net_balance_amount = Math.max(0, frm.doc.total_amount - frm.doc.discount - frm.doc.amount_paid);
+  
+  frm.set_value("total_amount", temp_total_amount);
+  frm.set_value("amount_paid", temp_amount_paid);
+  frm.set_value("net_balance_amount", temp_net_balance_amount);
 
-  frm.refresh_field('amount_paid');
   frm.refresh_field('total_amount');
+  frm.refresh_field('amount_paid');
   frm.refresh_field('net_balance_amount');
 }
 
