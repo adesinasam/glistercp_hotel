@@ -124,16 +124,6 @@ class HotelCheckIn(Document):
 
     @frappe.whitelist()
     def get_room_price(self, room):
-        room_price = frappe.get_value('Rooms', {
-            'room_number': room
-        }, [
-            'price'
-        ])
-        return room_price
-
-
-    @frappe.whitelist()
-    def get_room_price(self, room):
         room_price = frappe.get_value('Rooms', {'room_number': room}, 'price')
         return room_price
 
