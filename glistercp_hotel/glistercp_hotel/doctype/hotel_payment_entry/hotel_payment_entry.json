@@ -15,11 +15,15 @@
   "room",
   "amount_paid",
   "advance",
+  "mode_of_payment",
+  "payment_type",
+  "reference_no",
   "column_break_6",
   "guest_id",
   "check_in_id",
   "guest_name",
   "contact_no",
+  "reference_date",
   "amended_from"
  ],
  "fields": [
@@ -139,6 +143,38 @@
    "fieldtype": "Data",
    "label": "Contact No",
    "read_only": 1
+  },
+  {
+   "fieldname": "mode_of_payment",
+   "fieldtype": "Link",
+   "label": "Mode of Payment",
+   "options": "Mode of Payment",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.payment_type != \"Cash\"",
+   "default": "Today",
+   "fieldname": "reference_date",
+   "fieldtype": "Date",
+   "label": "Reference Date",
+   "mandatory_depends_on": "eval:doc.payment_type != \"Cash\""
+  },
+  {
+   "depends_on": "mode_of_payment",
+   "fetch_from": "mode_of_payment.type",
+   "fieldname": "payment_type",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Payment Type",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "depends_on": "eval:doc.payment_type != \"Cash\"",
+   "fieldname": "reference_no",
+   "fieldtype": "Data",
+   "label": "Payment Reference No",
+   "mandatory_depends_on": "eval:doc.payment_type != \"Cash\""
   }
  ],
  "is_submittable": 1,

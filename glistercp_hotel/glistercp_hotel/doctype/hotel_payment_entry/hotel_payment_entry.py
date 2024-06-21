@@ -72,8 +72,8 @@ class HotelPaymentEntry(Document):
       payment_entry.paid_amount = self.amount_paid
       payment_entry.received_amount = self.amount_paid
       payment_entry.guest_id = self.guest_id
-      payment_entry.reference_date = reference_date
-      payment_entry.reference_no = payment_reference
+      payment_entry.reference_date = self.reference_date
+      payment_entry.reference_no = self.reference_no
       payment_entry.remarks = 'Room ' + str(self.room)
       payment_entry.insert(ignore_permissions=True)
       payment_entry.submit()
@@ -89,8 +89,8 @@ class HotelPaymentEntry(Document):
         # jv.naming_series = 'ACC-JV-.YYYY.-'
         jv.posting_date = frappe.utils.data.today()
         jv.company = self.company
-        jv.cheque_date = reference_date
-        jv.cheque_no = payment_reference
+        jv.cheque_date = self.reference_date
+        jv.cheque_no = self.reference_no
         jv.guest_id = self.guest_id
         jv.bill_no = self.name
         jv.pay_to_recd_from = self.guest_name
