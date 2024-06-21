@@ -73,6 +73,14 @@ frappe.ui.form.on('Hotel Check In Room', {
     handle_room_selection(frm, cdt, cdn);
   },
 
+  amount: function(frm, cdt, cdn) {
+    frm.trigger('total_amount');
+  },
+
+  amt_paid: function(frm, cdt, cdn) {
+    frm.trigger('total_amount');
+  },
+
   rooms_remove: function(frm) {
     frm.trigger('total_amount');
   },
