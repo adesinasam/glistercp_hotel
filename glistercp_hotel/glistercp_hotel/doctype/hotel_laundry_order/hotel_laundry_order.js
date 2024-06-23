@@ -15,7 +15,7 @@ frappe.ui.form.on('Hotel Laundry Order', {
 		frm.set_query('item','items', function(doc) {
       return {
         filters: {
-          item_group: 'Laundry'
+          item_group_type: 'Laundry'
         }
       };
     });

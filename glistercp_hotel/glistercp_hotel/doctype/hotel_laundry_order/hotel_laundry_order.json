@@ -18,6 +18,7 @@
   "posting_date",
   "date",
   "guest_name",
+  "guest_id",
   "check_in_id",
   "section_break_8",
   "items",
@@ -59,6 +60,14 @@
   {
    "fieldname": "column_break_5",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "check_in_id.guest_name",
+   "fieldname": "guest_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Guest Name",
+   "read_only": 1
   },
   {
    "fetch_from": "check_in_id.guest_name",

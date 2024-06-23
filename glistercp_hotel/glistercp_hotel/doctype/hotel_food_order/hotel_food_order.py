@@ -188,13 +188,35 @@ def create_sales_invoice(self, customer, company, check_in_id = None, remarks = 
     sales_invoice_doc.submit()
 
 def create_payment_voucher(self, customer, company, remarks):
+    pay_account = ""
+
+    pay_type = frappe.db.get_value('Mode of Payment', self.mode_of_payment, 'type')
+    if (pay_type != "Cash"):
+        reference_date = frappe.utils.data.today()
+        payment_reference = 0
+    else:
+        reference_date = ""
+        payment_reference = ""
+
+    pay_account = frappe.db.get_value('Mode of Payment Account', {'parent' : self.mode_of_payment, 'company' : self.company}, 'default_account')
+
+    if not pay_account or pay_account == "":
+        frappe.throw(
+            title="Error",
+            msg="The selected Mode of Payment has no linked account."
+        )
+
     payment_entry = frappe.new_doc('Payment Entry')
     payment_entry.payment_type = 'Receive'
-    payment_entry.mode_of_payment = 'Cash'
-    payment_entry.paid_to = company.default_cash_account
+    payment_entry.mode_of_payment = self.mode_of_payment
+    payment_entry.paid_to = pay_account
+    # payment_entry.mode_of_payment = 'Cash'
+    # payment_entry.paid_to = company.default_cash_account
     payment_entry.paid_from = company.default_receivable_account
     payment_entry.party_type = 'Customer'
     payment_entry.party = customer
+    payment_entry.reference_date = reference_date
+    payment_entry.reference_no = payment_reference
     payment_entry.received_amount = self.total_amount - self.discount_amount + self.service_charges
     payment_entry.paid_amount = self.total_amount - self.discount_amount + self.service_charges
     payment_entry.remarks = remarks
