@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "autoname": "naming_series:",
  "creation": "2024-01-29 14:39:12.726257",
  "doctype": "DocType",
@@ -191,6 +192,7 @@
    "write": 1
   }
  ],
+ "quick_entry": 1,
  "search_fields": "guest_name,contact_no,cnic,passport_no",
  "sort_field": "modified",
  "sort_order": "DESC",
