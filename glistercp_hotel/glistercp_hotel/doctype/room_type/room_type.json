@@ -1,5 +1,6 @@
 {
  "autoname": "field:type",
+ "allow_import": 1,
  "creation": "2024-01-29 12:45:13.379092",
  "doctype": "DocType",
  "editable_grid": 1,
