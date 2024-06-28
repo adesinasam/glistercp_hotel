@@ -175,6 +175,12 @@
    "label": "Hotel Payment Entry",
    "link_to": "Hotel Payment Entry",
    "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Hotel Food Order",
+   "link_to": "Hotel Food Order",
+   "type": "DocType"
   }
  ]
 }
