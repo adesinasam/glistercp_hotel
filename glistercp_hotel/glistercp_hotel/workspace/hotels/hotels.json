@@ -178,6 +178,12 @@
   },
   {
    "doc_view": "List",
+   "label": "Hotel Laundry Order",
+   "link_to": "Hotel Laundry Order",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
    "label": "Hotel Food Order",
    "link_to": "Hotel Food Order",
    "type": "DocType"

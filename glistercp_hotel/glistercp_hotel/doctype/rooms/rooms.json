@@ -1,4 +1,6 @@
 {
+ "actions": [],
+ "allow_rename": 1,
  "autoname": "field:room_number",
  "creation": "2024-01-29 12:55:46.208299",
  "doctype": "DocType",
@@ -97,7 +99,6 @@
    "fieldtype": "Currency",
    "label": "Price",
    "precision": "2",
-   "read_only": 1,
    "reqd": 1
   }
  ],
