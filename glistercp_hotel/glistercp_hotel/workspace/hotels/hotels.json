@@ -105,8 +105,8 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Room Facilities",
-   "link_to": "Room Facilities",
+   "label": "Room Facility Type",
+   "link_to": "Room Facility Type",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
